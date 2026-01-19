@@ -5,7 +5,8 @@ name = "pypi"
 
 [packages]
 playwright = "==1.57.0"
-pytest-playwright = "==0.7.2"
+ruff = "~=0.14.13"
+pytest-playwright = "*"
 
 [dev-packages]
 
