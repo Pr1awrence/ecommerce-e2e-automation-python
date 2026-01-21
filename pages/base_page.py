@@ -2,10 +2,12 @@ from playwright.sync_api import Page
 
 
 class BasePage:
+    url = ""
+
     def __init__(self, page: Page):
         self.page = page
 
-    def visit(self, url: str = ""):
+    def navigate_to(self, url: str):
         self.page.goto(url)
 
     def click(self, selector: str):
@@ -16,3 +18,6 @@ class BasePage:
 
     def is_visible(self, selector: str) -> bool:
         return self.page.locator(selector).is_visible()
+
+    def get_text(self, selector: str) -> str:
+        return self.page.locator(selector).text_content()
