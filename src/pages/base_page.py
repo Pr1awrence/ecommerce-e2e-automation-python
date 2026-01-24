@@ -4,8 +4,9 @@ from playwright.sync_api import Page
 class BasePage:
     url = ""
 
-    def __init__(self, page: Page):
+    def __init__(self, page: Page, base_url: str):
         self.page = page
+        self.base_url = base_url
 
     def navigate_to(self, url: str):
         self.page.goto(url)
