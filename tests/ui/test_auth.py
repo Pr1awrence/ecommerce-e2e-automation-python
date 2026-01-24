@@ -5,6 +5,7 @@ from playwright.sync_api import expect
 login_error_message = "Your email or password is incorrect!"
 
 
+@pytest.mark.login
 @pytest.mark.smoke
 def test_login_with_valid_credentials(page, login_page, home_page, user_credentials):
     expected_username = "test"
@@ -16,6 +17,7 @@ def test_login_with_valid_credentials(page, login_page, home_page, user_credenti
     expect(login_page.user_label).to_have_text(expected_username)
 
 
+@pytest.mark.login
 @pytest.mark.regression
 def test_login_with_invalid_credentials(page, login_page, home_page, user_credentials):
     home_page.signup_login_button.click()

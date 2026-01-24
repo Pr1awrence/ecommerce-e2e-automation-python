@@ -1,14 +1,13 @@
 from playwright.sync_api import Page
 
-from pages.base_page import BasePage
+from src.pages.base_page import BasePage
 
 
 class LoginPage(BasePage):
     url = "/login"
 
     def __init__(self, page: Page, base_url: str):
-        super().__init__(page)
-        self.base_url = base_url
+        super().__init__(page, base_url=base_url)
         self.login_email_input = self.page.locator('input[data-qa="login-email"]')
         self.login_password_input = self.page.locator('input[data-qa="login-password"]')
         self.login_button = self.page.locator('button[data-qa="login-button"]')
