@@ -11,12 +11,23 @@ class AuthAPI(BaseAPI):
     def __init__(self, base_url):
         super().__init__(base_url)
 
+    def get_user(self, email):
+        payload = {"email": email}
+        return self.get(self.USER_DETAIL, params=payload, raise_for_status="False")
+
     def login_user(self, email=None, password=None):
-        payload = {k: v for k, v in {"email": email, "password": password}.items() if v is not None}
+        payload = {
+            k: v
+            for k, v in {"email": email, "password": password}.items()
+            if v is not None
+        }
         return self.post(self.LOGIN_VERIFY, data=payload, raise_for_status="False")
 
     def create_user(self, user_data):
         return self.post(self.CREATE_ACCOUNT, data=user_data, raise_for_status="False")
+
+    def update_user(self, user_data):
+        return self.put(self.UPDATE_ACCOUNT, data=user_data, raise_for_status="False")
 
     def delete_user(self, email, password):
         payload = {"email": email, "password": password}

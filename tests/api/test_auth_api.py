@@ -14,9 +14,7 @@ def test_login_api_with_valid_credentials(auth_api, registered_user):
 
 @pytest.mark.api
 def test_login_api_without_email(auth_api):
-    response = auth_api.login_user(
-        password="something"
-    )
+    response = auth_api.login_user(password="something")
 
     # This API returns HTTP 200 even for errors.
     # The real status code is provided in the 'responseCode' field within the JSON body.
@@ -24,14 +22,15 @@ def test_login_api_without_email(auth_api):
 
     response_data = response.json()
     assert response_data["responseCode"] == 400
-    assert response_data["message"] == "Bad request, email or password parameter is missing in POST request."
+    assert (
+        response_data["message"]
+        == "Bad request, email or password parameter is missing in POST request."
+    )
 
 
 @pytest.mark.api
 def test_login_api_incorrect_password(auth_api, registered_user):
-    response = auth_api.login_user(
-        email=registered_user["email"], password="123"
-    )
+    response = auth_api.login_user(email=registered_user["email"], password="123")
 
     # This API returns HTTP 200 even for errors.
     # The real status code is provided in the 'responseCode' field within the JSON body.
@@ -49,3 +48,37 @@ def test_registration_api_successful(auth_api, new_user_data, user_cleanup):
     assert response.status_code == 200
     assert response.json()["responseCode"] == 201
     assert response.json()["message"] == "User created!"
+
+
+@pytest.mark.api
+def test_delete_user_successful(auth_api, new_user_data):
+    auth_api.create_user(new_user_data)
+    response = auth_api.delete_user(new_user_data["email"], new_user_data["password"])
+
+    assert response.status_code == 200
+    assert response.json()["message"] == "Account deleted!"
+
+
+@pytest.mark.api
+def test_get_user_details(auth_api, registered_user):
+    response = auth_api.get_user(registered_user["email"])
+
+    assert response.status_code == 200
+    assert response.json()["user"]["email"] == registered_user["email"]
+    assert response.json()["user"]["name"] == registered_user["name"]
+
+
+@pytest.mark.api
+def test_update_user_details(auth_api, registered_user):
+    updated_user = registered_user.copy()
+    new_name = "John AutoTester"
+
+    updated_user["name"] = new_name
+
+    response = auth_api.update_user(updated_user)
+
+    assert response.status_code == 200
+    assert response.json()["message"] == "User updated!"
+
+    response = auth_api.get_user(registered_user["email"])
+    assert response.json()["user"]["name"] == new_name
