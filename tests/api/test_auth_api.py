@@ -2,9 +2,9 @@ import pytest
 
 
 @pytest.mark.api
-def test_login_api_with_valid_credentials(auth_api, user_credentials):
+def test_login_api_with_valid_credentials(auth_api, registered_user):
     response = auth_api.login_user(
-        email=user_credentials["email"], password=user_credentials["password"]
+        email=registered_user["email"], password=registered_user["password"]
     )
 
     assert response.status_code == 200
@@ -28,9 +28,9 @@ def test_login_api_without_email(auth_api):
 
 
 @pytest.mark.api
-def test_login_api_incorrect_password(auth_api, user_credentials):
+def test_login_api_incorrect_password(auth_api, registered_user):
     response = auth_api.login_user(
-        email=user_credentials["email"], password="123"
+        email=registered_user["email"], password="123"
     )
 
     # This API returns HTTP 200 even for errors.
@@ -43,7 +43,7 @@ def test_login_api_incorrect_password(auth_api, user_credentials):
 
 
 @pytest.mark.api
-def test_registration_api_successful(auth_api, new_user_data, cleanup_registration):
+def test_registration_api_successful(auth_api, new_user_data, user_cleanup):
     response = auth_api.create_user(new_user_data)
 
     assert response.status_code == 200
