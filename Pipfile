@@ -8,6 +8,8 @@ playwright = "==1.57.0"
 ruff = "==0.14.13"
 pytest-playwright = "==0.7.2"
 python-dotenv = "==1.2.1"
+faker = "==40.1.2"
+pydantic = {extras = ["email"], version = "==2.12.5"}
 
 [dev-packages]
 

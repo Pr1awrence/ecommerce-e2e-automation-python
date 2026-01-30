@@ -1,10 +1,11 @@
 import pytest
 
 
+@pytest.mark.login
 @pytest.mark.api
 def test_login_api_with_valid_credentials(auth_api, registered_user):
     response = auth_api.login_user(
-        email=registered_user["email"], password=registered_user["password"]
+        email=registered_user.email, password=registered_user.password
     )
 
     assert response.status_code == 200
@@ -12,6 +13,7 @@ def test_login_api_with_valid_credentials(auth_api, registered_user):
     assert response_data["message"] == "User exists!"
 
 
+@pytest.mark.login
 @pytest.mark.api
 def test_login_api_without_email(auth_api):
     response = auth_api.login_user(password="something")
@@ -28,9 +30,10 @@ def test_login_api_without_email(auth_api):
     )
 
 
+@pytest.mark.login
 @pytest.mark.api
 def test_login_api_incorrect_password(auth_api, registered_user):
-    response = auth_api.login_user(email=registered_user["email"], password="123")
+    response = auth_api.login_user(email=registered_user.email, password="123")
 
     # This API returns HTTP 200 even for errors.
     # The real status code is provided in the 'responseCode' field within the JSON body.
@@ -41,6 +44,7 @@ def test_login_api_incorrect_password(auth_api, registered_user):
     assert response_data["message"] == "User not found!"
 
 
+@pytest.mark.signup
 @pytest.mark.api
 def test_registration_api_successful(auth_api, new_user_data, user_cleanup):
     response = auth_api.create_user(new_user_data)
@@ -53,7 +57,7 @@ def test_registration_api_successful(auth_api, new_user_data, user_cleanup):
 @pytest.mark.api
 def test_delete_user_successful(auth_api, new_user_data):
     auth_api.create_user(new_user_data)
-    response = auth_api.delete_user(new_user_data["email"], new_user_data["password"])
+    response = auth_api.delete_user(new_user_data.email, new_user_data.password)
 
     assert response.status_code == 200
     assert response.json()["message"] == "Account deleted!"
@@ -61,24 +65,24 @@ def test_delete_user_successful(auth_api, new_user_data):
 
 @pytest.mark.api
 def test_get_user_details(auth_api, registered_user):
-    response = auth_api.get_user(registered_user["email"])
+    response = auth_api.get_user(registered_user.email)
 
     assert response.status_code == 200
-    assert response.json()["user"]["email"] == registered_user["email"]
-    assert response.json()["user"]["name"] == registered_user["name"]
+    assert response.json()["user"]["email"] == registered_user.email
+    assert response.json()["user"]["name"] == registered_user.name
 
 
 @pytest.mark.api
 def test_update_user_details(auth_api, registered_user):
-    updated_user = registered_user.copy()
+    updated_user = registered_user.model_copy()
     new_name = "John AutoTester"
 
-    updated_user["name"] = new_name
+    updated_user.name = new_name
 
     response = auth_api.update_user(updated_user)
 
     assert response.status_code == 200
     assert response.json()["message"] == "User updated!"
 
-    response = auth_api.get_user(registered_user["email"])
+    response = auth_api.get_user(registered_user.email)
     assert response.json()["user"]["name"] == new_name

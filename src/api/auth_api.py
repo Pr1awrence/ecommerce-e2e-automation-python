@@ -24,10 +24,12 @@ class AuthAPI(BaseAPI):
         return self.post(self.LOGIN_VERIFY, data=payload, raise_for_status="False")
 
     def create_user(self, user_data):
-        return self.post(self.CREATE_ACCOUNT, data=user_data, raise_for_status="False")
+        payload = user_data.model_dump()
+        return self.post(self.CREATE_ACCOUNT, data=payload, raise_for_status="False")
 
     def update_user(self, user_data):
-        return self.put(self.UPDATE_ACCOUNT, data=user_data, raise_for_status="False")
+        payload = user_data.model_dump()
+        return self.put(self.UPDATE_ACCOUNT, data=payload, raise_for_status="False")
 
     def delete_user(self, email, password):
         payload = {"email": email, "password": password}
