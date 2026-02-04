@@ -2,7 +2,7 @@ import pytest
 from playwright.sync_api import expect
 
 
-login_error_message = "Your email or password is incorrect!"
+EXPECTED_ERROR_TEXT = "Your email or password is incorrect!"
 
 
 @pytest.mark.ui
@@ -18,9 +18,13 @@ def test_login_with_valid_credentials(page, auth_page, home_page, registered_use
 
 @pytest.mark.ui
 def test_login_with_invalid_credentials(page, auth_page, home_page):
-    home_page.auth_button.click()
-    auth_page.login_form.login("wrong_email@test.com", "wrong_password")
-    current_error_text = auth_page.get_error_text()
+    page.route("**/api/verifyLogin", lambda route: route.fulfill(
+        status=200,
+        body='{"responseCode": 404, "message": "Your email or password is incorrect!"}'
+    ))
 
-    assert current_error_text == login_error_message
+    home_page.auth_button.click()
+    auth_page.login_form.login("test@mock.com", "123456")
+
+    expect(auth_page.error_message).to_have_text(EXPECTED_ERROR_TEXT)
     expect(page).to_have_url(auth_page.url)

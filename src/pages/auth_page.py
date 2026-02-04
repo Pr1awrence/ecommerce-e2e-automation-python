@@ -41,5 +41,3 @@ class AuthPage(BasePage):
         self.user_label = self.page.locator("i.fa.fa-user + b")
         self.error_message = page.locator("form[action='/login'] p")
 
-    def get_error_text(self):
-        return self.error_message.inner_text()
