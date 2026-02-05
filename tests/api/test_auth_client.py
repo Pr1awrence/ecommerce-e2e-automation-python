@@ -5,6 +5,7 @@ The real status code is in the 'responseCode' field within the JSON body.
 
 import pytest
 
+from src.models.user_model import fake
 from tests.utils import assert_api_response, assert_response_message
 
 
@@ -19,8 +20,19 @@ def test_login_with_valid_credentials(auth_api, registered_user):
 
 
 @pytest.mark.api
+def test_login_with_incorrect_email(auth_api):
+    response = auth_api.login_user(email=fake.name(), password=fake.password())
+
+    assert_api_response(response=response, expected_code=404)
+    assert_response_message(
+        response=response,
+        expected_message="User not found!",
+    )
+
+
+@pytest.mark.api
 def test_login_without_email(auth_api):
-    response = auth_api.login_user(password="something")
+    response = auth_api.login_user(password=fake.password())
 
     assert_api_response(response=response, expected_code=400)
     assert_response_message(
@@ -31,7 +43,7 @@ def test_login_without_email(auth_api):
 
 @pytest.mark.api
 def test_login_incorrect_password(auth_api, registered_user):
-    response = auth_api.login_user(email=registered_user.email, password="123")
+    response = auth_api.login_user(email=registered_user.email, password=fake.password())
 
     assert_api_response(response=response, expected_code=404)
     assert_response_message(response=response, expected_message="User not found!")
@@ -75,7 +87,7 @@ def test_get_user_details(auth_api, registered_user):
 @pytest.mark.api
 def test_update_user_details(auth_api, registered_user):
     updated_user = registered_user.model_copy()
-    new_name = "John AutoTester"
+    new_name = fake.name()
 
     updated_user.name = new_name
 
@@ -86,3 +98,6 @@ def test_update_user_details(auth_api, registered_user):
 
     response = auth_api.get_user(registered_user.email)
     assert response.json()["user"]["name"] == new_name
+
+    # This API doesn't delete object if name is changed!
+    registered_user.name = new_name
