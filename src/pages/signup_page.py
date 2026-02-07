@@ -16,6 +16,7 @@ class SignUpPage(BasePage):
     def __init__(self, page: Page, base_url: str):
         super().__init__(page, base_url=base_url)
 
+        self.page_title = page.get_by_role("heading", name="Enter Account Information")
         self.title_radio = lambda value: page.locator(
             f'input[name="title"][value="{value}"]'
         )
