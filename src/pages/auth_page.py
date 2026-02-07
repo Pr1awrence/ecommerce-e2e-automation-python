@@ -10,6 +10,8 @@ class LoginForm:
         self.login_password_input = self.page.locator('input[data-qa="login-password"]')
         self.login_button = self.page.locator('button[data-qa="login-button"]')
 
+        self.error_message = page.locator("form[action='/login'] p")
+
     def login(self, email: str, password: str):
         self.login_email_input.fill(email)
         self.login_password_input.fill(password)
@@ -22,6 +24,8 @@ class InitialSignUpForm:
         self.signup_name_input = self.page.locator('input[data-qa="signup-name"]')
         self.signup_email_input = self.page.locator('input[data-qa="signup-email"]')
         self.signup_button = self.page.locator('button[data-qa="signup-button"]')
+
+        self.error_message = page.locator("form[action='/signup'] p")
 
     def signup(self, name: str, email: str):
         self.signup_name_input.fill(name)
@@ -39,5 +43,4 @@ class AuthPage(BasePage):
         self.signup_form = InitialSignUpForm(page)
 
         self.user_label = self.page.locator("i.fa.fa-user + b")
-        self.error_message = page.locator("form[action='/login'] p")
 
