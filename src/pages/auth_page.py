@@ -43,4 +43,3 @@ class AuthPage(BasePage):
         self.signup_form = InitialSignUpForm(page)
 
         self.user_label = self.page.locator("i.fa.fa-user + b")
-
