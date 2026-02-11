@@ -1,6 +1,7 @@
 import pytest
 from playwright.sync_api import Page
 
+from src.pages.account_created_page import AccountCreatedPage
 from src.pages.home_page import HomePage
 from src.pages.auth_page import AuthPage
 from src.pages.signup_page import SignUpPage
@@ -25,3 +26,8 @@ def home_page(page, base_url):
 @pytest.fixture
 def signup_page(page, base_url):
     return SignUpPage(page, base_url=base_url)
+
+
+@pytest.fixture
+def account_created_page(page, base_url):
+    return AccountCreatedPage(page, base_url=base_url)

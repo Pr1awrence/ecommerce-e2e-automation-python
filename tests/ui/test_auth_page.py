@@ -14,6 +14,7 @@ BUG_16_URL_CHANGE = (
 )
 
 
+@pytest.mark.smoke
 def test_login_with_valid_credentials(auth_page, home_page, registered_user):
     expected_username = registered_user.name
 
